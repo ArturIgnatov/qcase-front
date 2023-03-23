@@ -1,7 +1,11 @@
-import { useMemo, useState, createContext } from 'react';
-import { createTheme, PaletteMode, ThemeProvider, Box } from '@mui/material';
+import { createContext } from 'react';
+import { ThemeProvider, Box } from '@mui/material';
 import { SxProps } from '@mui/system/styleFunctionSx';
 import { MainRouter } from './navigation/MainRouter';
+import { ApolloProvider } from '@apollo/client';
+import { apolloClient } from './apollo/client';
+import { useAppTheme } from './hooks/app-theme';
+import { ColorModeContext } from './contexts/ColorModeContext';
 
 const sx: SxProps = {
   display: 'flex',
@@ -11,44 +15,18 @@ const sx: SxProps = {
   color: 'text.primary',
 };
 
-const ColorModeContext = createContext({} as { toggleColorMode: () => void });
-
 export const App = () => {
-  const [mode, setMode] = useState<PaletteMode>('dark');
-
-  const colorMode = useMemo(
-    () => ({
-      toggleColorMode: () => {
-        setMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'));
-      },
-    }),
-    [],
-  );
-
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode,
-          primary: {
-            main: '#e91e63',
-          },
-          secondary: {
-            main: '#2962ff',
-          },
-        },
-        spacing: 4,
-      }),
-    [mode],
-  );
+  const [theme, context] = useAppTheme();
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider {...{ theme }}>
-        <Box {...{ sx }}>
-          <MainRouter />
-        </Box>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+    <ApolloProvider client={apolloClient}>
+      <ColorModeContext.Provider value={context}>
+        <ThemeProvider {...{ theme }}>
+          <Box {...{ sx }}>
+            <MainRouter />
+          </Box>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
+    </ApolloProvider>
   );
 };

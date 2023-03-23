@@ -1,0 +1,37 @@
+schema: 'https://localhost:3000/graphql'
+generates:
+  ./src/types/app-schema.ts:
+    config:
+      dedupeFragments: true
+      avoidOptionals: true
+      declarationKind: 'interface'
+      skipTypename: false
+      namingConvention:
+        typeNames: change-case-all#pascalCase
+        enumValues: change-case-all#upperCase
+      scalars:
+        DateTime: string
+        Datetime: string
+        BigInt: number
+    plugins:
+      - add:
+          content: '/* eslint-disable */'
+      - typescript
+    hooks:
+      afterOneFileWrite:
+        - eslint --fix
+  ./src/utils/api/:
+    documents: ['./src/apollo/queries.ts', '/src/apollo/mutations.ts']
+    preset: near-operation-file
+    presetConfig:
+      extension: -generated-types.ts
+      baseTypesPath: '../app-schema'
+    config:
+      declarationKind: 'interface'
+      skipTypename: true
+      avoidOptionals: true
+    plugins:
+      - typescript-operations
+    hooks:
+      afterOneFileWrite:
+        - eslint --fix

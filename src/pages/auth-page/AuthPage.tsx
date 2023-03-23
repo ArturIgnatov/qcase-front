@@ -30,7 +30,7 @@ export const AuthPage = () => {
           </Typography>
         </Box>
         {isRegister ? <RegisterForm /> : <LoginForm />}
-        <Link component="button" underline="always" onClick={toggleRegister}>
+        <Link component="button" color="secondary" underline="always" onClick={toggleRegister}>
           {isRegister ? 'Go back' : "Don't have an account? Sign Up"}
         </Link>
       </Container>

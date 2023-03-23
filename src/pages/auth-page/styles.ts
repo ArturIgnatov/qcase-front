@@ -20,7 +20,7 @@ export const styles = createStyles({
     width: '80%',
     maxWidth: '426px',
     minHeight: '50%',
-    maxHeight: '60%',
+    maxHeight: '80%',
     borderRadius: 12,
     padding: 36,
     opacity: 0.7,

@@ -1,0 +1,126 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Mutation {
+    createOrganization(createOrgInput: CreateOrganizationInput!): OrganizationEntity!
+    createProject(createProjectInput: CreateProjectInput!): ProjectEntity!
+    createUser(createUser: CreateUserInput!): UserEntity!
+    removeOrganization(id: String!): String!
+    removeProject(id: String!): String!
+    removeUser(id: String!): String!
+    updateOrganization(updateOrgInput: UpdateOrganizationInput!): OrganizationEntity!
+    updateProject(updateProjectInput: UpdateProjectInput!): ProjectEntity!
+    updateUser(updateUser: UpdateUserInput!): UserEntity!
+}
+
+type OrganizationEntity {
+    createdUserId: ID!
+    description: String!
+    id: ID!
+    name: String!
+    organizationUsers: [OrganizationUserEntity!]!
+    projects: [ProjectEntity!]!
+    status: OrganizationStatus!
+}
+
+type OrganizationUserEntity {
+    id: ID!
+    organization: OrganizationEntity!
+    organizationId: ID!
+    user: UserEntity!
+    userId: ID!
+}
+
+type ProjectEntity {
+    createdUserId: String!
+    description: String!
+    id: ID!
+    name: String!
+    organization: OrganizationEntity!
+    organizationId: ID!
+    status: ProjectStatus!
+}
+
+type Query {
+    organization(id: String!): OrganizationEntity!
+    organizations(filters: OrganizationFiltersInput): [OrganizationEntity!]!
+    project(id: String!): ProjectEntity!
+    projects: [ProjectEntity!]!
+    user(id: String!): UserEntity!
+    users: [UserEntity!]!
+}
+
+type UserEntity {
+    email: String!
+    fname: String!
+    id: ID!
+    lname: String!
+    role: UserRole!
+    userOrganizations: [OrganizationUserEntity!]!
+}
+
+"The organization statuses"
+enum OrganizationStatus {
+    ACTIVE
+    BLOCKED
+    DISABLE
+}
+
+"The organization statuses"
+enum ProjectStatus {
+    ACTIVE
+    BLOCKED
+    DISABLE
+}
+
+"The user supported roles."
+enum UserRole {
+    ADMIN
+    SUPER_ADMIN
+    USER
+}
+
+input CreateOrganizationInput {
+    description: String
+    name: String!
+}
+
+input CreateProjectInput {
+    description: String
+    name: String!
+    organizationId: String!
+}
+
+input CreateUserInput {
+    email: String!
+    fname: String!
+    lname: String
+    password: String!
+}
+
+input OrganizationFiltersInput {
+    userId: ID
+}
+
+input UpdateOrganizationInput {
+    description: String
+    id: ID!
+    name: String
+}
+
+input UpdateProjectInput {
+    description: String
+    id: ID!
+    name: String
+}
+
+input UpdateUserInput {
+    fname: String
+    id: ID!
+    lname: String
+    status: String
+}
