@@ -4,7 +4,7 @@ import { Box, useTheme, CssBaseline, BoxProps, styled } from '@mui/material';
 import { MainPageDrawer } from './drower/MainPageDrawer';
 import { MainAppBar } from './app-bar/MainAppBar';
 import { Route, Routes, Outlet } from 'react-router-dom';
-import { CasesPage } from '../cases-page/CasesPage';
+import { TemplatesPage } from '../templates-page/TemplatesPage';
 import { RunnerPage } from '../runner-page/RunnerPage';
 import { TestsPage } from '../tests-page/TestsPage';
 
@@ -23,7 +23,7 @@ export const MainPage = () => {
       <MainPageDrawer {...{ isOpened, handleDrawerOpen }} direction={theme.direction} />
       <MainContent>
         <Routes>
-          <Route path="/cases/:organizationId" element={<CasesPage />} />
+          <Route path="/templates/:organizationId" element={<TemplatesPage />} />
           <Route path="/runner/:organizationId" element={<RunnerPage />} />
           <Route path="/tests/:organizationId" element={<TestsPage />} />
         </Routes>

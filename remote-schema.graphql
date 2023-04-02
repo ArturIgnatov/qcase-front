@@ -5,19 +5,40 @@ schema {
     mutation: Mutation
 }
 
+type CaseEntity {
+    createdAt: DateTime!
+    createdUserId: ID!
+    description: String!
+    id: ID!
+    name: String!
+    templateId: ID!
+    updatedAt: DateTime!
+    user: UserEntity!
+}
+
 type Mutation {
+    createCase(createCaseInput: CreateCaseInput!): CaseEntity!
     createOrganization(createOrgInput: CreateOrganizationInput!): OrganizationEntity!
     createProject(createProjectInput: CreateProjectInput!): ProjectEntity!
+    createTag(createTagInput: CreateTagInput!): TagEntity!
+    createTemplate(createTemplateInput: CreateTemplateInput!): TemplateEntity!
     createUser(createUser: CreateUserInput!): UserEntity!
+    removeCase(id: String!): String!
     removeOrganization(id: String!): String!
     removeProject(id: String!): String!
+    removeTag(id: String!): String!
+    removeTemplate(id: String!): String!
     removeUser(id: String!): String!
+    updateCase(updateCaseInput: UpdateCaseInput!): CaseEntity!
     updateOrganization(updateOrgInput: UpdateOrganizationInput!): OrganizationEntity!
     updateProject(updateProjectInput: UpdateProjectInput!): ProjectEntity!
+    updateTag(updateTagInput: UpdateTagInput!): TagEntity!
+    updateTemplate(updateTemplateInput: UpdateTemplateInput!): TemplateEntity!
     updateUser(updateUser: UpdateUserInput!): UserEntity!
 }
 
 type OrganizationEntity {
+    createdAt: DateTime!
     createdUserId: ID!
     description: String!
     id: ID!
@@ -25,41 +46,79 @@ type OrganizationEntity {
     organizationUsers: [OrganizationUserEntity!]!
     projects: [ProjectEntity!]!
     status: OrganizationStatus!
+    updatedAt: DateTime!
 }
 
 type OrganizationUserEntity {
+    createdAt: DateTime!
     id: ID!
     organization: OrganizationEntity!
     organizationId: ID!
+    updatedAt: DateTime!
     user: UserEntity!
     userId: ID!
 }
 
 type ProjectEntity {
-    createdUserId: String!
+    createdAt: DateTime!
+    createdUserId: ID!
     description: String!
     id: ID!
     name: String!
     organization: OrganizationEntity!
     organizationId: ID!
     status: ProjectStatus!
+    updatedAt: DateTime!
 }
 
 type Query {
+    case(id: String!): CaseEntity!
+    cases(filters: CaseFiltersInput): [CaseEntity!]!
     organization(id: String!): OrganizationEntity!
     organizations(filters: OrganizationFiltersInput): [OrganizationEntity!]!
     project(id: String!): ProjectEntity!
-    projects: [ProjectEntity!]!
+    projects(filters: ProjectFiltersInput): [ProjectEntity!]!
+    tag(id: String!): TagEntity!
+    tags(filters: TagFiltersInput!): [TagEntity!]!
+    template(id: String!): TemplateEntity!
+    templates(filters: TemplateFiltersInput): [TemplateEntity!]!
     user(id: String!): UserEntity!
     users: [UserEntity!]!
 }
 
+type TagEntity {
+    caseId: ID!
+    color: String!
+    createdAt: DateTime!
+    createdUserId: ID!
+    id: ID!
+    organizationId: ID!
+    templateId: ID!
+    title: String!
+    updatedAt: DateTime!
+}
+
+type TemplateEntity {
+    cases: [CaseEntity!]!
+    createdAt: DateTime!
+    createdUserId: ID!
+    description: String!
+    id: ID!
+    name: String!
+    organization: OrganizationEntity!
+    organizationId: ID!
+    updatedAt: DateTime!
+    user: UserEntity!
+}
+
 type UserEntity {
+    createdAt: DateTime!
     email: String!
     fname: String!
     id: ID!
     lname: String!
     role: UserRole!
+    updatedAt: DateTime!
     userOrganizations: [OrganizationUserEntity!]!
 }
 
@@ -84,6 +143,19 @@ enum UserRole {
     USER
 }
 
+"A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format."
+scalar DateTime
+
+input CaseFiltersInput {
+    templateId: ID!
+}
+
+input CreateCaseInput {
+    description: String
+    name: String!
+    templateId: ID!
+}
+
 input CreateOrganizationInput {
     description: String
     name: String!
@@ -93,6 +165,18 @@ input CreateProjectInput {
     description: String
     name: String!
     organizationId: String!
+}
+
+input CreateTagInput {
+    color: String!
+    organizationId: ID!
+    title: String!
+}
+
+input CreateTemplateInput {
+    description: String
+    name: String!
+    organizationId: ID!
 }
 
 input CreateUserInput {
@@ -106,6 +190,26 @@ input OrganizationFiltersInput {
     userId: ID
 }
 
+input ProjectFiltersInput {
+    organizationId: String!
+}
+
+input TagFiltersInput {
+    caseId: ID
+    organizationId: ID
+    templateId: ID
+}
+
+input TemplateFiltersInput {
+    organizationId: ID
+}
+
+input UpdateCaseInput {
+    description: String
+    id: ID!
+    name: String!
+}
+
 input UpdateOrganizationInput {
     description: String
     id: ID!
@@ -113,6 +217,18 @@ input UpdateOrganizationInput {
 }
 
 input UpdateProjectInput {
+    description: String
+    id: ID!
+    name: String
+}
+
+input UpdateTagInput {
+    color: String
+    id: ID!
+    title: String
+}
+
+input UpdateTemplateInput {
     description: String
     id: ID!
     name: String

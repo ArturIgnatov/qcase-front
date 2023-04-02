@@ -9,22 +9,31 @@ import { GET_GLOBAL_ORGANIZATIONS } from '../../../apollo/queries';
 import { AuthService } from '../../../services/auth.service';
 import { CreateOrganization } from './create-organization/CreateOrganization';
 import { useLocation, matchRoutes } from 'react-router-dom';
+import {
+  GlobalOrganizationQuery,
+  GlobalOrganizationQueryVariables,
+} from '../../../apollo/queries-generated-types';
 
 interface IProps {
   isOpened: boolean;
 }
 
 const routes = [
-  { path: 'main/cases/:id', name: 'Cases' },
+  { path: 'main/templates/:id', name: 'Templates' },
   { path: 'main/tests/:id', name: 'Tests' },
   { path: 'main/runner/:id', name: 'Runner' },
 ];
 
 export const AppMenu: FC<IProps> = memo(({ isOpened }) => {
   const [open, setOpen] = useState(true);
-  const { data } = useQuery<{
-    organizations: Array<{ id: string; name: string; description: string }>;
-  }>(GET_GLOBAL_ORGANIZATIONS, { variables: { userId: AuthService.getUserId() } });
+
+  const { data } = useQuery<GlobalOrganizationQuery, GlobalOrganizationQueryVariables>(
+    GET_GLOBAL_ORGANIZATIONS,
+    {
+      variables: { filters: { userId: AuthService.getUserId() } },
+    },
+  );
+
   const organizations = data?.organizations ?? [];
   const location = useLocation();
   const matchedRoutes = matchRoutes(routes, location);

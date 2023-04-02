@@ -9,7 +9,6 @@ const httpLink = createHttpLink({
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
   const token = AuthService.getTokens();
-  console.warn('token', token);
   // return the headers to the context so httpLink can read them
   return {
     headers: {
@@ -29,6 +28,14 @@ export const apolloClient = new ApolloClient({
             read(_, { args, toReference }) {
               return toReference({
                 __typename: 'UserEntity',
+                id: args?.id,
+              });
+            },
+          },
+          organization: {
+            read(_, { args, toReference }) {
+              return toReference({
+                __typename: 'OrganizationEntity',
                 id: args?.id,
               });
             },

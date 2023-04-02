@@ -1,10 +1,11 @@
 import { FC, Fragment, memo, useCallback, useState } from 'react';
 import { MenuItem } from '../menu-item/MenuItem';
 import { BugReport, FormatListBulleted, PlayArrow, Settings } from '@mui/icons-material';
-import { Avatar, Collapse, colors, IconButton, List, Paper, styled } from '@mui/material';
+import { Avatar, Collapse, IconButton, List, styled } from '@mui/material';
 import { styles } from '../styles';
 import { useNavigate } from 'react-router-dom';
-import { OrganizationModal } from '../../../../components/organization-modal/OrganizationModal';
+import { OrganizationSettingsModal } from '../organization-settings/OrganizationSettingsModal';
+import { useModalVisible } from '../../../../hooks/modal-visible';
 
 interface IProps {
   id: string;
@@ -16,20 +17,16 @@ interface IProps {
 
 export const OrganizationMenu: FC<IProps> = memo(
   ({ id, isOpened, selectedRoute, name, description }) => {
-    const [openSettings, setOpenSettings] = useState(false);
     const [open, setOpen] = useState(!!selectedRoute);
+    const { isVisible, closeModal, closed, openModal } = useModalVisible();
     const navigate = useNavigate();
-
-    const toggleOpenSettings = useCallback(() => {
-      setOpenSettings(prevState => !prevState);
-    }, []);
 
     const toggleOpen = useCallback(() => {
       setOpen(prevState => !prevState);
     }, []);
 
     const navigateToCases = useCallback(() => {
-      navigate(`cases/${id}`);
+      navigate(`templates/${id}`);
     }, [id, navigate]);
 
     const navigateToRunner = useCallback(() => {
@@ -47,7 +44,7 @@ export const OrganizationMenu: FC<IProps> = memo(
           divider={!open && !isOpened}
           onClick={toggleOpen}
           secondaryAction={
-            <IconButton onClick={toggleOpenSettings}>
+            <IconButton onClick={openModal}>
               <Settings fontSize="small" />
             </IconButton>
           }
@@ -67,8 +64,8 @@ export const OrganizationMenu: FC<IProps> = memo(
               <BugReport />
             </MenuItem>
             <MenuItem
-              text="Cases"
-              selected={selectedRoute === 'Cases'}
+              text="Templates"
+              selected={selectedRoute === 'Templates'}
               divider={!isOpened}
               onClick={navigateToCases}
             >
@@ -76,11 +73,9 @@ export const OrganizationMenu: FC<IProps> = memo(
             </MenuItem>
           </List>
         </Collapse>
-        <OrganizationModal
-          isVisible={openSettings}
-          closeModal={toggleOpenSettings}
-          organizationInfo={{ id, description, name }}
-        />
+        {!closed && (
+          <OrganizationSettingsModal {...{ isVisible, closeModal, id, name, description }} />
+        )}
       </Fragment>
     );
   },

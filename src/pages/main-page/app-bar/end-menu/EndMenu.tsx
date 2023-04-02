@@ -23,6 +23,7 @@ import { ColorModeContext } from '../../../../contexts/ColorModeContext';
 import { AuthService } from '../../../../services/auth.service';
 import { useQuery } from '@apollo/client';
 import { GET_GLOBAL_USER } from '../../../../apollo/queries';
+import { GlobalUserQuery } from '../../../../apollo/queries-generated-types';
 
 interface IProps {
   mode: PaletteMode;
@@ -32,7 +33,7 @@ export const EndMenu: FC<IProps> = memo(({ mode }) => {
   const [confirmOpened, setConfirmOpened] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { toggleColorMode } = useContext(ColorModeContext);
-  const { data } = useQuery<{ user: { fname: string } }>(GET_GLOBAL_USER, {
+  const { data } = useQuery<GlobalUserQuery>(GET_GLOBAL_USER, {
     variables: { id: AuthService.getUserId() },
   });
   const open = Boolean(anchorEl);
@@ -75,7 +76,7 @@ export const EndMenu: FC<IProps> = memo(({ mode }) => {
         </IconButton>
       </Tooltip>
       <Menu
-        id="basic-menu"
+        id="profile-menu"
         anchorEl={anchorEl}
         open={open}
         TransitionComponent={Fade}

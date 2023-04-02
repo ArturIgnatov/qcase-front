@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import React from 'react';
 import { ThemeProvider, Box } from '@mui/material';
 import { SxProps } from '@mui/system/styleFunctionSx';
 import { MainRouter } from './navigation/MainRouter';
