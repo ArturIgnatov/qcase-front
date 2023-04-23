@@ -19,20 +19,48 @@ export interface CaseEntity {
   createdAt: Scalars['DateTime'];
   createdUserId: Scalars['ID'];
   description: Scalars['String'];
+  expectedResult: Scalars['String'];
   id: Scalars['ID'];
+  importance: CaseImportance;
   name: Scalars['String'];
+  precondition: Scalars['String'];
+  steps: Array<StepEntity>;
+  tags: Array<CaseTagsEntity>;
   templateId: Scalars['ID'];
   updatedAt: Scalars['DateTime'];
   user: UserEntity;
 }
 
 export interface CaseFiltersInput {
-  templateId: Scalars['ID'];
+  templateIds: Array<Scalars['ID']>;
+}
+
+/** Importance status for case */
+export enum CaseImportance {
+  HIGH = 'HIGH',
+  LOW = 'LOW',
+  MIDDLE = 'MIDDLE'
+}
+
+export interface CaseTagsEntity {
+  __typename?: 'CaseTagsEntity';
+  case: CaseEntity;
+  caseId: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  tag: TagEntity;
+  tagId: Scalars['ID'];
+  updatedAt: Scalars['DateTime'];
 }
 
 export interface CreateCaseInput {
   description?: InputMaybe<Scalars['String']>;
+  expectedResult?: InputMaybe<Scalars['String']>;
+  importance: CaseImportance;
   name: Scalars['String'];
+  precondition?: InputMaybe<Scalars['String']>;
+  steps?: InputMaybe<Array<Scalars['String']>>;
+  tagIds?: InputMaybe<Array<Scalars['ID']>>;
   templateId: Scalars['ID'];
 }
 
@@ -57,13 +85,34 @@ export interface CreateTemplateInput {
   description?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   organizationId: Scalars['ID'];
+  projectId?: InputMaybe<Scalars['ID']>;
+  tagIds?: InputMaybe<Array<Scalars['ID']>>;
+}
+
+export interface CreateTestInput {
+  caseIds?: InputMaybe<Array<Scalars['ID']>>;
+  description?: InputMaybe<Scalars['String']>;
+  /** User ID executor */
+  executorId: Scalars['ID'];
+  name: Scalars['String'];
+  organizationId: Scalars['ID'];
+  projectId?: InputMaybe<Scalars['ID']>;
+  /** User ID responsible */
+  responsibleId: Scalars['ID'];
+  tagIds?: InputMaybe<Array<Scalars['ID']>>;
 }
 
 export interface CreateUserInput {
   email: Scalars['String'];
   fname: Scalars['String'];
   lname?: InputMaybe<Scalars['String']>;
+  organizationId?: InputMaybe<Scalars['ID']>;
   password: Scalars['String'];
+}
+
+export interface CreateUserInviteInput {
+  email: Scalars['String'];
+  organizationId: Scalars['ID'];
 }
 
 export interface Mutation {
@@ -73,7 +122,10 @@ export interface Mutation {
   createProject: ProjectEntity;
   createTag: TagEntity;
   createTemplate: TemplateEntity;
+  createTest: TestEntity;
   createUser: UserEntity;
+  createUserInvite: UserInviteEntity;
+  remove: Scalars['ID'];
   removeCase: Scalars['String'];
   removeOrganization: Scalars['String'];
   removeProject: Scalars['String'];
@@ -114,8 +166,23 @@ export interface MutationCreateTemplateArgs {
 }
 
 
+export interface MutationCreateTestArgs {
+  createTestInput: CreateTestInput;
+}
+
+
 export interface MutationCreateUserArgs {
   createUser: CreateUserInput;
+}
+
+
+export interface MutationCreateUserInviteArgs {
+  createUserInviteInput: CreateUserInviteInput;
+}
+
+
+export interface MutationRemoveArgs {
+  id: Scalars['String'];
 }
 
 
@@ -188,6 +255,8 @@ export interface OrganizationEntity {
   organizationUsers: Array<OrganizationUserEntity>;
   projects: Array<ProjectEntity>;
   status: OrganizationStatus;
+  tags: Array<TagEntity>;
+  tests: Array<TestEntity>;
   updatedAt: Scalars['DateTime'];
 }
 
@@ -211,6 +280,10 @@ export interface OrganizationUserEntity {
   updatedAt: Scalars['DateTime'];
   user: UserEntity;
   userId: Scalars['ID'];
+}
+
+export interface OrganizationUsersInput {
+  organizationId: Scalars['ID'];
 }
 
 export interface ProjectEntity {
@@ -242,6 +315,7 @@ export interface Query {
   case: CaseEntity;
   cases: Array<CaseEntity>;
   organization: OrganizationEntity;
+  organizationUsers: Array<OrganizationUserEntity>;
   organizations: Array<OrganizationEntity>;
   project: ProjectEntity;
   projects: Array<ProjectEntity>;
@@ -249,7 +323,11 @@ export interface Query {
   tags: Array<TagEntity>;
   template: TemplateEntity;
   templates: Array<TemplateEntity>;
+  test: TestEntity;
+  tests: Array<TestEntity>;
   user: UserEntity;
+  userInvites: Array<UserInviteEntity>;
+  userOrganizations: Array<OrganizationUserEntity>;
   users: Array<UserEntity>;
 }
 
@@ -266,6 +344,11 @@ export interface QueryCasesArgs {
 
 export interface QueryOrganizationArgs {
   id: Scalars['String'];
+}
+
+
+export interface QueryOrganizationUsersArgs {
+  organizationUsersInput: OrganizationUsersInput;
 }
 
 
@@ -304,19 +387,46 @@ export interface QueryTemplatesArgs {
 }
 
 
+export interface QueryTestArgs {
+  id: Scalars['String'];
+}
+
+
+export interface QueryTestsArgs {
+  filers?: InputMaybe<TestFiltersInput>;
+}
+
+
 export interface QueryUserArgs {
   id: Scalars['String'];
 }
 
+
+export interface QueryUserInvitesArgs {
+  filters?: InputMaybe<UserInvitesInput>;
+}
+
+
+export interface QueryUserOrganizationsArgs {
+  userOrganizationsInput: UserOrganizationsInput;
+}
+
+export interface StepEntity {
+  __typename?: 'StepEntity';
+  caseId: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+}
+
 export interface TagEntity {
   __typename?: 'TagEntity';
-  caseId: Scalars['ID'];
   color: Scalars['String'];
   createdAt: Scalars['DateTime'];
-  createdUserId: Scalars['ID'];
+  createdUserId: Maybe<Scalars['ID']>;
   id: Scalars['ID'];
   organizationId: Scalars['ID'];
-  templateId: Scalars['ID'];
   title: Scalars['String'];
   updatedAt: Scalars['DateTime'];
 }
@@ -331,18 +441,60 @@ export interface TemplateEntity {
   __typename?: 'TemplateEntity';
   cases: Array<CaseEntity>;
   createdAt: Scalars['DateTime'];
-  createdUserId: Scalars['ID'];
+  createdUserId: Maybe<Scalars['ID']>;
   description: Scalars['String'];
   id: Scalars['ID'];
   name: Scalars['String'];
   organization: OrganizationEntity;
   organizationId: Scalars['ID'];
+  project: Maybe<ProjectEntity>;
+  projectId: Maybe<Scalars['ID']>;
+  tags: Array<TemplateTagsEntity>;
   updatedAt: Scalars['DateTime'];
   user: UserEntity;
 }
 
 export interface TemplateFiltersInput {
   organizationId?: InputMaybe<Scalars['ID']>;
+}
+
+export interface TemplateTagsEntity {
+  __typename?: 'TemplateTagsEntity';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  tag: TagEntity;
+  tagId: Scalars['ID'];
+  template: TemplateEntity;
+  templateId: Scalars['ID'];
+  updatedAt: Scalars['DateTime'];
+}
+
+export interface TestEntity {
+  __typename?: 'TestEntity';
+  createdAt: Scalars['DateTime'];
+  createdUserId: Scalars['ID'];
+  description: Scalars['String'];
+  /** User ID executor */
+  executorId: Scalars['ID'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  organizationId: Scalars['ID'];
+  /** User ID responsible */
+  responsibleId: Scalars['ID'];
+  status: TestStatus;
+  updatedAt: Scalars['DateTime'];
+}
+
+export interface TestFiltersInput {
+  organizationId?: InputMaybe<Scalars['ID']>;
+}
+
+/** Statuses for test */
+export enum TestStatus {
+  FAILED = 'FAILED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  SUCCESS = 'SUCCESS',
+  WAITING = 'WAITING'
 }
 
 export interface UpdateCaseInput {
@@ -392,6 +544,24 @@ export interface UserEntity {
   role: UserRole;
   updatedAt: Scalars['DateTime'];
   userOrganizations: Array<OrganizationUserEntity>;
+}
+
+export interface UserInviteEntity {
+  __typename?: 'UserInviteEntity';
+  code: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  email: Scalars['String'];
+  id: Scalars['ID'];
+  organizationId: Scalars['ID'];
+  updatedAt: Scalars['DateTime'];
+}
+
+export interface UserInvitesInput {
+  organizationId: Scalars['ID'];
+}
+
+export interface UserOrganizationsInput {
+  userId: Scalars['ID'];
 }
 
 /** The user supported roles. */

@@ -4,7 +4,23 @@ export type GlobalUserQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
 }>;
 
-export type GlobalUserQuery = { user: Pick<Types.UserEntity, 'id' | 'fname' | 'lname'> };
+export type GlobalUserQuery = { user: Pick<Types.UserEntity, 'id' | 'fname' | 'lname' | 'email'> };
+
+export type GlobalOrganizationUsersQueryVariables = Types.Exact<{
+  data: Types.OrganizationUsersInput;
+}>;
+
+export type GlobalOrganizationUsersQuery = {
+  organizationUsers: Array<{ user: Pick<Types.UserEntity, 'id' | 'fname' | 'lname' | 'email'> }>;
+};
+
+export type GlobalInvitesQueryVariables = Types.Exact<{
+  filters: Types.UserInvitesInput;
+}>;
+
+export type GlobalInvitesQuery = {
+  userInvites: Array<Pick<Types.UserInviteEntity, 'id' | 'email' | 'createdAt'>>;
+};
 
 export type GlobalOrganizationQueryVariables = Types.Exact<{
   filters?: Types.InputMaybe<Types.OrganizationFiltersInput>;
@@ -28,8 +44,21 @@ export type GlobalTemplatesQueryVariables = Types.Exact<{
 
 export type GlobalTemplatesQuery = {
   templates: Array<
-    Pick<Types.TemplateEntity, 'id' | 'name' | 'description' | 'createdAt' | 'organizationId'>
+    Pick<Types.TemplateEntity, 'id' | 'name' | 'description' | 'createdAt' | 'organizationId'> & {
+      tags: Array<
+        Pick<Types.TemplateTagsEntity, 'id'> & { tag: Pick<Types.TagEntity, 'title' | 'color'> }
+      >;
+      project: Types.Maybe<Pick<Types.ProjectEntity, 'id' | 'name'>>;
+    }
   >;
+};
+
+export type TemplatesSelectListQueryVariables = Types.Exact<{
+  filters: Types.TemplateFiltersInput;
+}>;
+
+export type TemplatesSelectListQuery = {
+  templates: Array<Pick<Types.TemplateEntity, 'id' | 'name'>>;
 };
 
 export type GlobalCasesQueryVariables = Types.Exact<{
@@ -37,7 +66,32 @@ export type GlobalCasesQueryVariables = Types.Exact<{
 }>;
 
 export type GlobalCasesQuery = {
-  cases: Array<Pick<Types.CaseEntity, 'id' | 'name' | 'description' | 'createdAt' | 'templateId'>>;
+  cases: Array<
+    Pick<
+      Types.CaseEntity,
+      | 'id'
+      | 'name'
+      | 'description'
+      | 'createdAt'
+      | 'templateId'
+      | 'precondition'
+      | 'expectedResult'
+      | 'importance'
+    > & {
+      steps: Array<Pick<Types.StepEntity, 'id' | 'title'>>;
+      tags: Array<
+        Pick<Types.CaseTagsEntity, 'id'> & { tag: Pick<Types.TagEntity, 'title' | 'color'> }
+      >;
+    }
+  >;
+};
+
+export type CasesSelectListQueryVariables = Types.Exact<{
+  filters?: Types.InputMaybe<Types.CaseFiltersInput>;
+}>;
+
+export type CasesSelectListQuery = {
+  cases: Array<Pick<Types.CaseEntity, 'id' | 'name' | 'templateId'>>;
 };
 
 export type GlobalTagsQueryVariables = Types.Exact<{

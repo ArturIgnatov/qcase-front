@@ -6,6 +6,7 @@ import { ApolloProvider } from '@apollo/client';
 import { apolloClient } from './apollo/client';
 import { useAppTheme } from './hooks/app-theme';
 import { ColorModeContext } from './contexts/ColorModeContext';
+import { SnackbarProvider } from 'notistack';
 
 const sx: SxProps = {
   display: 'flex',
@@ -22,9 +23,11 @@ export const App = () => {
     <ApolloProvider client={apolloClient}>
       <ColorModeContext.Provider value={context}>
         <ThemeProvider {...{ theme }}>
-          <Box {...{ sx }}>
-            <MainRouter />
-          </Box>
+          <SnackbarProvider maxSnack={3}>
+            <Box {...{ sx }}>
+              <MainRouter />
+            </Box>
+          </SnackbarProvider>
         </ThemeProvider>
       </ColorModeContext.Provider>
     </ApolloProvider>

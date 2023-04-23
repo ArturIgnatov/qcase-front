@@ -6,15 +6,12 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
   Divider,
-  IconButton,
   InputAdornment,
   Stack,
   TextField,
 } from '@mui/material';
 import { ColorPicker } from '../../../../../components/color-picker/ColorPicker';
-import { Close } from '@mui/icons-material';
 import { useMutation } from '@apollo/client';
 import { CREATE_TAG, UPDATE_TAG } from '../../../../../apollo/mutations';
 import {
@@ -28,6 +25,7 @@ import {
   GlobalTagsQueryVariables,
 } from '../../../../../apollo/queries-generated-types';
 import { GLOBAL_TAGS } from '../../../../../apollo/queries';
+import { DialogHeader } from '../../../../../components/dialog-header/DialogHeader';
 
 interface IProps {
   organizationId: string;
@@ -97,21 +95,7 @@ export const TagModal: FC<IProps> = ({ isVisible, organizationId, tag, closeModa
 
   return (
     <Dialog open={isVisible} maxWidth="xs" onClose={closeModal}>
-      <DialogTitle>
-        {tag ? 'Update tag' : 'Create tag'}
-        <IconButton
-          aria-label="close"
-          onClick={closeModal}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 13,
-            color: theme => theme.palette.grey[500],
-          }}
-        >
-          <Close fontSize="small" />
-        </IconButton>
-      </DialogTitle>
+      <DialogHeader title={tag ? 'Update tag' : 'Create tag'} {...{ closeModal }} />
       <DialogContent>
         <DialogContentText>
           {tag
@@ -149,7 +133,7 @@ export const TagModal: FC<IProps> = ({ isVisible, organizationId, tag, closeModa
       </DialogContent>
       <DialogActions>
         <Button disabled={isDisabled()} onClick={tag ? updateTag : createTag}>
-          {tag ? 'Update tag' : ' Create tag'}
+          {tag ? 'Update tag' : 'Create tag'}
         </Button>
       </DialogActions>
     </Dialog>

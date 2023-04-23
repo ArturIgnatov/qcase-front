@@ -1,242 +1,367 @@
 # This file was generated based on ".graphqlconfig". Do not edit manually.
 
 schema {
-    query: Query
-    mutation: Mutation
+  query: Query
+  mutation: Mutation
 }
 
 type CaseEntity {
-    createdAt: DateTime!
-    createdUserId: ID!
-    description: String!
-    id: ID!
-    name: String!
-    templateId: ID!
-    updatedAt: DateTime!
-    user: UserEntity!
+  createdAt: DateTime!
+  createdUserId: ID!
+  description: String!
+  expectedResult: String!
+  id: ID!
+  importance: CaseImportance!
+  name: String!
+  precondition: String!
+  steps: [StepEntity!]!
+  tags: [CaseTagsEntity!]!
+  templateId: ID!
+  updatedAt: DateTime!
+  user: UserEntity!
+}
+
+type CaseTagsEntity {
+  case: CaseEntity!
+  caseId: ID!
+  createdAt: DateTime!
+  id: ID!
+  tag: TagEntity!
+  tagId: ID!
+  updatedAt: DateTime!
 }
 
 type Mutation {
-    createCase(createCaseInput: CreateCaseInput!): CaseEntity!
-    createOrganization(createOrgInput: CreateOrganizationInput!): OrganizationEntity!
-    createProject(createProjectInput: CreateProjectInput!): ProjectEntity!
-    createTag(createTagInput: CreateTagInput!): TagEntity!
-    createTemplate(createTemplateInput: CreateTemplateInput!): TemplateEntity!
-    createUser(createUser: CreateUserInput!): UserEntity!
-    removeCase(id: String!): String!
-    removeOrganization(id: String!): String!
-    removeProject(id: String!): String!
-    removeTag(id: String!): String!
-    removeTemplate(id: String!): String!
-    removeUser(id: String!): String!
-    updateCase(updateCaseInput: UpdateCaseInput!): CaseEntity!
-    updateOrganization(updateOrgInput: UpdateOrganizationInput!): OrganizationEntity!
-    updateProject(updateProjectInput: UpdateProjectInput!): ProjectEntity!
-    updateTag(updateTagInput: UpdateTagInput!): TagEntity!
-    updateTemplate(updateTemplateInput: UpdateTemplateInput!): TemplateEntity!
-    updateUser(updateUser: UpdateUserInput!): UserEntity!
+  createCase(createCaseInput: CreateCaseInput!): CaseEntity!
+  createOrganization(createOrgInput: CreateOrganizationInput!): OrganizationEntity!
+  createProject(createProjectInput: CreateProjectInput!): ProjectEntity!
+  createTag(createTagInput: CreateTagInput!): TagEntity!
+  createTemplate(createTemplateInput: CreateTemplateInput!): TemplateEntity!
+  createTest(createTestInput: CreateTestInput!): TestEntity!
+  createUser(createUser: CreateUserInput!): UserEntity!
+  createUserInvite(createUserInviteInput: CreateUserInviteInput!): UserInviteEntity!
+  remove(id: String!): ID!
+  removeCase(id: String!): String!
+  removeOrganization(id: String!): String!
+  removeProject(id: String!): String!
+  removeTag(id: String!): String!
+  removeTemplate(id: String!): String!
+  removeUser(id: String!): String!
+  updateCase(updateCaseInput: UpdateCaseInput!): CaseEntity!
+  updateOrganization(updateOrgInput: UpdateOrganizationInput!): OrganizationEntity!
+  updateProject(updateProjectInput: UpdateProjectInput!): ProjectEntity!
+  updateTag(updateTagInput: UpdateTagInput!): TagEntity!
+  updateTemplate(updateTemplateInput: UpdateTemplateInput!): TemplateEntity!
+  updateUser(updateUser: UpdateUserInput!): UserEntity!
 }
 
 type OrganizationEntity {
-    createdAt: DateTime!
-    createdUserId: ID!
-    description: String!
-    id: ID!
-    name: String!
-    organizationUsers: [OrganizationUserEntity!]!
-    projects: [ProjectEntity!]!
-    status: OrganizationStatus!
-    updatedAt: DateTime!
+  createdAt: DateTime!
+  createdUserId: ID!
+  description: String!
+  id: ID!
+  name: String!
+  organizationUsers: [OrganizationUserEntity!]!
+  projects: [ProjectEntity!]!
+  status: OrganizationStatus!
+  tags: [TagEntity!]!
+  tests: [TestEntity!]!
+  updatedAt: DateTime!
 }
 
 type OrganizationUserEntity {
-    createdAt: DateTime!
-    id: ID!
-    organization: OrganizationEntity!
-    organizationId: ID!
-    updatedAt: DateTime!
-    user: UserEntity!
-    userId: ID!
+  createdAt: DateTime!
+  id: ID!
+  organization: OrganizationEntity!
+  organizationId: ID!
+  updatedAt: DateTime!
+  user: UserEntity!
+  userId: ID!
 }
 
 type ProjectEntity {
-    createdAt: DateTime!
-    createdUserId: ID!
-    description: String!
-    id: ID!
-    name: String!
-    organization: OrganizationEntity!
-    organizationId: ID!
-    status: ProjectStatus!
-    updatedAt: DateTime!
+  createdAt: DateTime!
+  createdUserId: ID!
+  description: String!
+  id: ID!
+  name: String!
+  organization: OrganizationEntity!
+  organizationId: ID!
+  status: ProjectStatus!
+  updatedAt: DateTime!
 }
 
 type Query {
-    case(id: String!): CaseEntity!
-    cases(filters: CaseFiltersInput): [CaseEntity!]!
-    organization(id: String!): OrganizationEntity!
-    organizations(filters: OrganizationFiltersInput): [OrganizationEntity!]!
-    project(id: String!): ProjectEntity!
-    projects(filters: ProjectFiltersInput): [ProjectEntity!]!
-    tag(id: String!): TagEntity!
-    tags(filters: TagFiltersInput!): [TagEntity!]!
-    template(id: String!): TemplateEntity!
-    templates(filters: TemplateFiltersInput): [TemplateEntity!]!
-    user(id: String!): UserEntity!
-    users: [UserEntity!]!
+  case(id: String!): CaseEntity!
+  cases(filters: CaseFiltersInput): [CaseEntity!]!
+  organization(id: String!): OrganizationEntity!
+  organizationUsers(organizationUsersInput: OrganizationUsersInput!): [OrganizationUserEntity!]!
+  organizations(filters: OrganizationFiltersInput): [OrganizationEntity!]!
+  project(id: String!): ProjectEntity!
+  projects(filters: ProjectFiltersInput): [ProjectEntity!]!
+  tag(id: String!): TagEntity!
+  tags(filters: TagFiltersInput!): [TagEntity!]!
+  template(id: String!): TemplateEntity!
+  templates(filters: TemplateFiltersInput): [TemplateEntity!]!
+  test(id: String!): TestEntity!
+  tests(filers: TestFiltersInput): [TestEntity!]!
+  user(id: String!): UserEntity!
+  userInvites(filters: UserInvitesInput): [UserInviteEntity!]!
+  userOrganizations(userOrganizationsInput: UserOrganizationsInput!): [OrganizationUserEntity!]!
+  users: [UserEntity!]!
+}
+
+type StepEntity {
+  caseId: ID!
+  createdAt: DateTime!
+  id: ID!
+  title: String!
+  updatedAt: DateTime!
 }
 
 type TagEntity {
-    caseId: ID!
-    color: String!
-    createdAt: DateTime!
-    createdUserId: ID!
-    id: ID!
-    organizationId: ID!
-    templateId: ID!
-    title: String!
-    updatedAt: DateTime!
+  color: String!
+  createdAt: DateTime!
+  createdUserId: ID
+  id: ID!
+  organizationId: ID!
+  title: String!
+  updatedAt: DateTime!
 }
 
 type TemplateEntity {
-    cases: [CaseEntity!]!
-    createdAt: DateTime!
-    createdUserId: ID!
-    description: String!
-    id: ID!
-    name: String!
-    organization: OrganizationEntity!
-    organizationId: ID!
-    updatedAt: DateTime!
-    user: UserEntity!
+  cases: [CaseEntity!]!
+  createdAt: DateTime!
+  createdUserId: ID
+  description: String!
+  id: ID!
+  name: String!
+  organization: OrganizationEntity!
+  organizationId: ID!
+  project: ProjectEntity
+  projectId: ID
+  tags: [TemplateTagsEntity!]!
+  updatedAt: DateTime!
+  user: UserEntity!
+}
+
+type TemplateTagsEntity {
+  createdAt: DateTime!
+  id: ID!
+  tag: TagEntity!
+  tagId: ID!
+  template: TemplateEntity!
+  templateId: ID!
+  updatedAt: DateTime!
+}
+
+type TestEntity {
+  createdAt: DateTime!
+  createdUserId: ID!
+  description: String!
+  "User ID executor"
+  executorId: ID!
+  id: ID!
+  name: String!
+  organizationId: ID!
+  "User ID responsible"
+  responsibleId: ID!
+  status: TestStatus!
+  updatedAt: DateTime!
 }
 
 type UserEntity {
-    createdAt: DateTime!
-    email: String!
-    fname: String!
-    id: ID!
-    lname: String!
-    role: UserRole!
-    updatedAt: DateTime!
-    userOrganizations: [OrganizationUserEntity!]!
+  createdAt: DateTime!
+  email: String!
+  fname: String!
+  id: ID!
+  lname: String!
+  role: UserRole!
+  updatedAt: DateTime!
+  userOrganizations: [OrganizationUserEntity!]!
+}
+
+type UserInviteEntity {
+  code: String!
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  organizationId: ID!
+  updatedAt: DateTime!
+}
+
+"Importance status for case"
+enum CaseImportance {
+  HIGH
+  LOW
+  MIDDLE
 }
 
 "The organization statuses"
 enum OrganizationStatus {
-    ACTIVE
-    BLOCKED
-    DISABLE
+  ACTIVE
+  BLOCKED
+  DISABLE
 }
 
 "The organization statuses"
 enum ProjectStatus {
-    ACTIVE
-    BLOCKED
-    DISABLE
+  ACTIVE
+  BLOCKED
+  DISABLE
+}
+
+"Statuses for test"
+enum TestStatus {
+  FAILED
+  IN_PROGRESS
+  SUCCESS
+  WAITING
 }
 
 "The user supported roles."
 enum UserRole {
-    ADMIN
-    SUPER_ADMIN
-    USER
+  ADMIN
+  SUPER_ADMIN
+  USER
 }
 
 "A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format."
 scalar DateTime
 
 input CaseFiltersInput {
-    templateId: ID!
+  templateIds: [ID!]!
 }
 
 input CreateCaseInput {
-    description: String
-    name: String!
-    templateId: ID!
+  description: String
+  expectedResult: String
+  importance: CaseImportance!
+  name: String!
+  precondition: String
+  steps: [String!] = []
+  tagIds: [ID!] = []
+  templateId: ID!
 }
 
 input CreateOrganizationInput {
-    description: String
-    name: String!
+  description: String
+  name: String!
 }
 
 input CreateProjectInput {
-    description: String
-    name: String!
-    organizationId: String!
+  description: String
+  name: String!
+  organizationId: String!
 }
 
 input CreateTagInput {
-    color: String!
-    organizationId: ID!
-    title: String!
+  color: String!
+  organizationId: ID!
+  title: String!
 }
 
 input CreateTemplateInput {
-    description: String
-    name: String!
-    organizationId: ID!
+  description: String = ""
+  name: String!
+  organizationId: ID!
+  projectId: ID
+  tagIds: [ID!] = []
+}
+
+input CreateTestInput {
+  caseIds: [ID!] = []
+  description: String = ""
+  "User ID executor"
+  executorId: ID!
+  name: String!
+  organizationId: ID!
+  projectId: ID
+  "User ID responsible"
+  responsibleId: ID!
+  tagIds: [ID!] = []
 }
 
 input CreateUserInput {
-    email: String!
-    fname: String!
-    lname: String
-    password: String!
+  email: String!
+  fname: String!
+  lname: String
+  organizationId: ID
+  password: String!
+}
+
+input CreateUserInviteInput {
+  email: String!
+  organizationId: ID!
 }
 
 input OrganizationFiltersInput {
-    userId: ID
+  userId: ID
+}
+
+input OrganizationUsersInput {
+  organizationId: ID!
 }
 
 input ProjectFiltersInput {
-    organizationId: String!
+  organizationId: String!
 }
 
 input TagFiltersInput {
-    caseId: ID
-    organizationId: ID
-    templateId: ID
+  caseId: ID
+  organizationId: ID
+  templateId: ID
 }
 
 input TemplateFiltersInput {
-    organizationId: ID
+  organizationId: ID
+}
+
+input TestFiltersInput {
+  organizationId: ID
 }
 
 input UpdateCaseInput {
-    description: String
-    id: ID!
-    name: String!
+  description: String
+  id: ID!
+  name: String!
 }
 
 input UpdateOrganizationInput {
-    description: String
-    id: ID!
-    name: String
+  description: String
+  id: ID!
+  name: String
 }
 
 input UpdateProjectInput {
-    description: String
-    id: ID!
-    name: String
+  description: String
+  id: ID!
+  name: String
 }
 
 input UpdateTagInput {
-    color: String
-    id: ID!
-    title: String
+  color: String
+  id: ID!
+  title: String
 }
 
 input UpdateTemplateInput {
-    description: String
-    id: ID!
-    name: String
+  description: String
+  id: ID!
+  name: String
 }
 
 input UpdateUserInput {
-    fname: String
-    id: ID!
-    lname: String
-    status: String
+  fname: String
+  id: ID!
+  lname: String
+  status: String
+}
+
+input UserInvitesInput {
+  organizationId: ID!
+}
+
+input UserOrganizationsInput {
+  userId: ID!
 }

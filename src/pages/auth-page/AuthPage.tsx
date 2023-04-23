@@ -1,9 +1,10 @@
 import { Avatar, Box, Link, Paper, styled, Typography } from '@mui/material';
 import { LockPerson } from '@mui/icons-material';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { LoginForm } from './login/loginForm';
 import { RegisterForm } from './register/RegisterForm';
 import { styles } from './styles';
+import { useSearchParams } from 'react-router-dom';
 
 const Container = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -12,11 +13,14 @@ const Container = styled(Paper)(({ theme }) => ({
 }));
 
 export const AuthPage = () => {
-  const [isRegister, setIsRegister] = useState(false);
+  const [searchParams] = useSearchParams();
+  const inviteCode = searchParams.get('invite');
 
-  const toggleRegister = () => {
+  const [isRegister, setIsRegister] = useState(!!inviteCode);
+
+  const toggleRegister = useCallback(() => {
     setIsRegister(prevState => !prevState);
-  };
+  }, []);
 
   return (
     <Box sx={styles.container}>
@@ -29,7 +33,7 @@ export const AuthPage = () => {
             {isRegister ? 'Sign Up' : 'Sign In'}
           </Typography>
         </Box>
-        {isRegister ? <RegisterForm /> : <LoginForm />}
+        {isRegister ? <RegisterForm {...{ inviteCode }} /> : <LoginForm />}
         <Link component="button" color="secondary" underline="always" onClick={toggleRegister}>
           {isRegister ? 'Go back' : "Don't have an account? Sign Up"}
         </Link>

@@ -7,6 +7,7 @@ import { Route, Routes, Outlet } from 'react-router-dom';
 import { TemplatesPage } from '../templates-page/TemplatesPage';
 import { RunnerPage } from '../runner-page/RunnerPage';
 import { TestsPage } from '../tests-page/TestsPage';
+import { JobPlaceholder } from '../../components/job-placeholder/JobPlaceholder';
 
 export const MainPage = () => {
   const [isOpened, setIsOpened] = useState(false);
@@ -23,6 +24,14 @@ export const MainPage = () => {
       <MainPageDrawer {...{ isOpened, handleDrawerOpen }} direction={theme.direction} />
       <MainContent>
         <Routes>
+          <Route
+            path="/"
+            element={
+              <Box sx={styles.main}>
+                <JobPlaceholder title="Main is work progress" />
+              </Box>
+            }
+          />
           <Route path="/templates/:organizationId" element={<TemplatesPage />} />
           <Route path="/runner/:organizationId" element={<RunnerPage />} />
           <Route path="/tests/:organizationId" element={<TestsPage />} />
@@ -35,5 +44,5 @@ export const MainPage = () => {
 
 const MainContent = styled(Box)<BoxProps>(({ theme }) => ({
   marginTop: 64,
-  width: '100%',
+  flex: 1,
 }));

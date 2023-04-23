@@ -2,9 +2,9 @@ import { BrowserRouter, Route, Routes, Navigate, useNavigate, useLocation } from
 import { AuthPage } from '../pages/auth-page/AuthPage';
 import { MainPage } from '../pages/main-page/MainPage';
 import { withAuth } from '../hocks/WithAuth';
-import { Fragment, memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { AuthService } from '../services/auth.service';
-import { useApolloClient, useLazyQuery } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import { GET_GLOBAL_USER } from '../apollo/queries';
 import { Backdrop, CircularProgress } from '@mui/material';
 
@@ -42,19 +42,19 @@ const AppMainRoutes = memo(() => {
             }
           })
           .catch(() => {
-            console.log('MAIN REGISTRY 2');
-            navigate('/auth');
+            console.log('MAIN REGISTRY 2', location);
+            navigate(location.pathname + location.search);
           })
           .finally(() => {
             console.log('MAIN REGISTRY 2');
             setIsLoading(false);
           });
       } else {
-        navigate('/auth');
+        navigate(location.pathname + location.search);
         setIsLoading(false);
       }
     }
-  }, [client, location.pathname, navigate]);
+  }, [client, location, navigate]);
 
   if (isLoading) {
     console.log('RENDER PLACE');

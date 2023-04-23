@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, FC, memo, useCallback, useState } from 'react';
 import {
   Alert,
   Box,
@@ -17,7 +17,11 @@ import { AuthService } from '../../../services/auth.service';
 import { GET_GLOBAL_USER } from '../../../apollo/queries';
 import { useNavigate } from 'react-router-dom';
 
-export const RegisterForm = () => {
+interface IProps {
+  inviteCode: string | null;
+}
+
+export const RegisterForm: FC<IProps> = memo(({ inviteCode }) => {
   const [fname, setFname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -47,7 +51,9 @@ export const RegisterForm = () => {
     setIsLoading(true);
 
     try {
-      const result = await AuthService.signUp({ email, password, fname });
+      const result = inviteCode
+        ? await AuthService.signUpInvite({ inviteCode, password, fname })
+        : await AuthService.signUp({ email, password, fname });
       const jwtUser = AuthService.decodeJWT(result.accessToken);
       const data = await getUser({ variables: { id: jwtUser.id } });
 
@@ -75,7 +81,9 @@ export const RegisterForm = () => {
     setError('');
   }, []);
 
-  const isDisabled = !fname.trim().length || !email.trim().length || !password.trim().length;
+  const isDisabled = inviteCode
+    ? !fname.trim().length || !password.trim().length
+    : !fname.trim().length || !email.trim().length || !password.trim().length;
 
   return (
     <Box sx={styles.container}>
@@ -92,20 +100,22 @@ export const RegisterForm = () => {
           shrink: true,
         }}
       />
-      <TextField
-        value={email}
-        label="Email"
-        sx={styles.input}
-        type="email"
-        required
-        color="secondary"
-        variant="outlined"
-        autoComplete="email"
-        onChange={handleEmailChange}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
+      {!inviteCode && (
+        <TextField
+          value={email}
+          label="Email"
+          sx={styles.input}
+          type="email"
+          required
+          color="secondary"
+          variant="outlined"
+          autoComplete="email"
+          onChange={handleEmailChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      )}
       <TextField
         value={password}
         label="Password"
@@ -158,4 +168,4 @@ export const RegisterForm = () => {
       </Snackbar>
     </Box>
   );
-};
+});

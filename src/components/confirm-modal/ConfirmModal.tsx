@@ -5,11 +5,9 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
-  IconButton,
   TextField,
 } from '@mui/material';
-import { Close } from '@mui/icons-material';
+import { DialogHeader } from '../dialog-header/DialogHeader';
 
 interface IProps {
   isVisible: boolean;
@@ -36,21 +34,7 @@ export const ConfirmModal: FC<IProps> = ({
 
   return (
     <Dialog fullWidth open={isVisible} onClose={closeModal} maxWidth="xs">
-      <DialogTitle>
-        {title}
-        <IconButton
-          aria-label="close"
-          onClick={closeModal}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 13,
-            color: theme => theme.palette.grey[500],
-          }}
-        >
-          <Close fontSize="small" />
-        </IconButton>
-      </DialogTitle>
+      <DialogHeader {...{ closeModal, title }} />
       <DialogContent dividers>
         <DialogContentText>{description}</DialogContentText>
         <TextField

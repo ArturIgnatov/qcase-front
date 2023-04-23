@@ -65,6 +65,17 @@ export const CREATE_TEMPLATE = gql`
       description
       createdAt
       organizationId
+      tags {
+        id
+        tag {
+          title
+          color
+        }
+      }
+      project {
+        id
+        name
+      }
     }
   }
 `;
@@ -77,6 +88,17 @@ export const UPDATE_TEMPLATE = gql`
       description
       createdAt
       organizationId
+      tags {
+        id
+        tag {
+          title
+          color
+        }
+      }
+      project {
+        id
+        name
+      }
     }
   }
 `;
@@ -96,6 +118,21 @@ export const CREATE_CASE = gql`
       description
       templateId
       createdAt
+      precondition
+      expectedResult
+      importance
+      steps {
+        id
+        title
+      }
+      tags {
+        id
+        tag {
+          id
+          title
+          color
+        }
+      }
     }
   }
 `;
@@ -108,6 +145,21 @@ export const UPDATE_CASE = gql`
       description
       templateId
       createdAt
+      precondition
+      expectedResult
+      importance
+      steps {
+        id
+        title
+      }
+      tags {
+        id
+        tag {
+          id
+          title
+          color
+        }
+      }
     }
   }
 `;
@@ -144,5 +196,16 @@ export const UPDATE_TAG = gql`
 export const REMOVE_TAG = gql`
   mutation RemoveTag($id: String!) {
     removeTag(id: $id)
+  }
+`;
+
+// INVITES
+export const CREATE_USER_INVITE = gql`
+  mutation CreateUserInvite($data: CreateUserInviteInput!) {
+    createUserInvite(createUserInviteInput: $data) {
+      id
+      email
+      createdAt
+    }
   }
 `;

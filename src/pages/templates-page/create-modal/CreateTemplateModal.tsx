@@ -1,4 +1,4 @@
-import { FC, SyntheticEvent, useCallback, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_TEMPLATE } from '../../../apollo/mutations';
 import {
@@ -15,17 +15,17 @@ import {
 import { CreateModal } from '../../../components/create-modal/CreateModal';
 import { GET_GLOBAL_PROJECTORS, GET_GLOBAL_TEMPLATES, GLOBAL_TAGS } from '../../../apollo/queries';
 import {
-  Autocomplete,
   FormControl,
   FormHelperText,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
-  Stack,
-  TextField,
 } from '@mui/material';
-import { AppChip } from '../../../components/app-chip/AppChip';
+import {
+  TagsAutoComplete,
+  TagsAutoCompleteProps,
+} from '../../../components/tags-autocomplete/TagsAutoComplete';
 
 interface IProps {
   organizationId: string;
@@ -37,7 +37,7 @@ export const CreateTemplateModal: FC<IProps> = ({ isVisible, organizationId, clo
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [selectedProject, setSelectedProject] = useState<string>('organization');
-  const [selectedTags, setSelectedTags] = useState<GlobalTagsQuery['tags']>([]);
+  const [selectedTags, setSelectedTags] = useState<TagsAutoCompleteProps['selected']>([]);
 
   const { data: tagsData } = useQuery<GlobalTagsQuery, GlobalTagsQueryVariables>(GLOBAL_TAGS, {
     variables: { filters: { organizationId } },
@@ -54,7 +54,6 @@ export const CreateTemplateModal: FC<IProps> = ({ isVisible, organizationId, clo
     CreateTemplateMutation,
     CreateTemplateMutationVariables
   >(CREATE_TEMPLATE, {
-    variables: { creationData: { name, description, organizationId } },
     update(cache, { data }) {
       const queryData = cache.readQuery<GlobalTemplatesQuery>({
         query: GET_GLOBAL_TEMPLATES,
@@ -72,20 +71,40 @@ export const CreateTemplateModal: FC<IProps> = ({ isVisible, organizationId, clo
   });
 
   const createTemplate = useCallback(async () => {
-    await createTemplateMutation();
+    const variables: CreateTemplateMutationVariables['creationData'] = {
+      name,
+      description,
+      organizationId,
+      tagIds: selectedTags.map(el => el.id),
+    };
+
+    if (selectedProject !== 'organization') {
+      variables.projectId = selectedProject;
+    }
+
+    await createTemplateMutation({
+      variables: {
+        creationData: variables,
+      },
+    });
     closeModal();
-  }, [closeModal, createTemplateMutation]);
+  }, [
+    closeModal,
+    createTemplateMutation,
+    description,
+    name,
+    organizationId,
+    selectedProject,
+    selectedTags,
+  ]);
 
   const handleChangeProject = useCallback((event: SelectChangeEvent) => {
     setSelectedProject(event.target.value);
   }, []);
 
-  const handleChangeTags = useCallback(
-    (event: SyntheticEvent, newValue: GlobalTagsQuery['tags']) => {
-      setSelectedTags(newValue);
-    },
-    [],
-  );
+  const handleChangeTags = useCallback((newValue: TagsAutoCompleteProps['selected']) => {
+    setSelectedTags(newValue);
+  }, []);
 
   const handleRemoveTag = useCallback((id: string) => {
     setSelectedTags(prevState => prevState.filter(el => el.id !== id));
@@ -120,35 +139,11 @@ export const CreateTemplateModal: FC<IProps> = ({ isVisible, organizationId, clo
         </Select>
         <FormHelperText>You can link a template to a specific project</FormHelperText>
       </FormControl>
-      <Autocomplete
-        multiple
-        openOnFocus
-        id="tags-standard"
-        value={selectedTags}
-        options={tagsData?.tags ?? []}
-        getOptionLabel={option => option.title}
-        onChange={handleChangeTags}
-        renderTags={selected => (
-          <Stack direction="row" gap={2} flexWrap="wrap">
-            {selected.map(el => (
-              <AppChip
-                key={el.id}
-                label={el.title}
-                color={el.color}
-                onDelete={() => handleRemoveTag(el.id)}
-              />
-            ))}
-          </Stack>
-        )}
-        renderInput={params => (
-          <TextField
-            {...params}
-            variant="outlined"
-            label="Tags"
-            placeholder="Search..."
-            helperText="You can add tags for quick search later"
-          />
-        )}
+      <TagsAutoComplete
+        tags={tagsData?.tags}
+        selected={selectedTags}
+        onSetTag={handleChangeTags}
+        onRemoveTag={handleRemoveTag}
       />
     </CreateModal>
   );

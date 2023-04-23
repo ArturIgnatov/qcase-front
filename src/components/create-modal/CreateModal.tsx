@@ -1,16 +1,15 @@
 import { ChangeEvent, FC, memo, PropsWithChildren } from 'react';
 import {
+  Breakpoint,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
-  IconButton,
   InputAdornment,
   TextField,
 } from '@mui/material';
-import { Close } from '@mui/icons-material';
+import { DialogHeader } from '../dialog-header/DialogHeader';
 
 interface IProps {
   isVisible: boolean;
@@ -22,6 +21,7 @@ interface IProps {
   setDescriptionValue: (text: string) => void;
   maxNameValue?: number;
   maxDescriptionValue?: number;
+  maxWidth?: Breakpoint;
   closeModal: () => void;
   onCreate: () => void;
 }
@@ -40,6 +40,7 @@ export const CreateModal: FC<PropsWithChildren<IProps>> = memo(
     onCreate,
     closeModal,
     children,
+    maxWidth = 'xs',
   }) => {
     const handleSetName = ({ target }: ChangeEvent<HTMLInputElement>) => {
       if (target.value.trim().length > maxNameValue) {
@@ -58,22 +59,8 @@ export const CreateModal: FC<PropsWithChildren<IProps>> = memo(
     };
 
     return (
-      <Dialog open={isVisible} sx={{ padding: 20 }} onClose={closeModal} maxWidth="xs">
-        <DialogTitle>
-          {title}
-          <IconButton
-            aria-label="close"
-            onClick={closeModal}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 13,
-              color: theme => theme.palette.grey[500],
-            }}
-          >
-            <Close fontSize="small" />
-          </IconButton>
-        </DialogTitle>
+      <Dialog open={isVisible} sx={{ padding: 20 }} onClose={closeModal} {...{ maxWidth }}>
+        <DialogHeader {...{ title, closeModal }} />
         <DialogContent>
           <DialogContentText>{description}</DialogContentText>
           <TextField
@@ -88,7 +75,7 @@ export const CreateModal: FC<PropsWithChildren<IProps>> = memo(
             variant="outlined"
             InputProps={{
               endAdornment: (
-                <InputAdornment position="start">{`${
+                <InputAdornment position="end">{`${
                   nameValue.trim().length
                 } / ${maxNameValue}`}</InputAdornment>
               ),

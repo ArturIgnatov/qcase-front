@@ -52,7 +52,7 @@ export const MainAppBar: FC<IProps> = memo(({ isOpened, handleDrawerOpen, mode }
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap component="div">
-          Home
+          Main
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
         <EndMenu {...{ mode }} />

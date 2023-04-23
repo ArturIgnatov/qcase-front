@@ -6,6 +6,30 @@ export const GET_GLOBAL_USER = gql`
       id
       fname
       lname
+      email
+    }
+  }
+`;
+
+export const GLOBAL_ORGANIZATION_USERS = gql`
+  query GlobalOrganizationUsers($data: OrganizationUsersInput!) {
+    organizationUsers(organizationUsersInput: $data) {
+      user {
+        id
+        fname
+        lname
+        email
+      }
+    }
+  }
+`;
+
+export const GLOBAL_USER_INVITES = gql`
+  query GlobalInvites($filters: UserInvitesInput!) {
+    userInvites(filters: $filters) {
+      id
+      email
+      createdAt
     }
   }
 `;
@@ -39,6 +63,26 @@ export const GET_GLOBAL_TEMPLATES = gql`
       description
       createdAt
       organizationId
+      tags {
+        id
+        tag {
+          title
+          color
+        }
+      }
+      project {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const TEMPLATES_SELECT_LIST = gql`
+  query TemplatesSelectList($filters: TemplateFiltersInput!) {
+    templates(filters: $filters) {
+      id
+      name
     }
   }
 `;
@@ -50,6 +94,30 @@ export const GLOBAL_CASES = gql`
       name
       description
       createdAt
+      templateId
+      precondition
+      expectedResult
+      importance
+      steps {
+        id
+        title
+      }
+      tags {
+        id
+        tag {
+          title
+          color
+        }
+      }
+    }
+  }
+`;
+
+export const CASES_SELECT_LIST = gql`
+  query CasesSelectList($filters: CaseFiltersInput) {
+    cases(filters: $filters) {
+      id
+      name
       templateId
     }
   }

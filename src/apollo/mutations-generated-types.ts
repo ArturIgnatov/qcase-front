@@ -52,7 +52,12 @@ export type CreateTemplateMutation = {
   createTemplate: Pick<
     Types.TemplateEntity,
     'id' | 'name' | 'description' | 'createdAt' | 'organizationId'
-  >;
+  > & {
+    tags: Array<
+      Pick<Types.TemplateTagsEntity, 'id'> & { tag: Pick<Types.TagEntity, 'title' | 'color'> }
+    >;
+    project: Types.Maybe<Pick<Types.ProjectEntity, 'id' | 'name'>>;
+  };
 };
 
 export type UpdateTemplateMutationVariables = Types.Exact<{
@@ -63,7 +68,12 @@ export type UpdateTemplateMutation = {
   updateTemplate: Pick<
     Types.TemplateEntity,
     'id' | 'name' | 'description' | 'createdAt' | 'organizationId'
-  >;
+  > & {
+    tags: Array<
+      Pick<Types.TemplateTagsEntity, 'id'> & { tag: Pick<Types.TagEntity, 'title' | 'color'> }
+    >;
+    project: Types.Maybe<Pick<Types.ProjectEntity, 'id' | 'name'>>;
+  };
 };
 
 export type RemoveTemplateMutationVariables = Types.Exact<{
@@ -77,7 +87,22 @@ export type CreateCaseMutationVariables = Types.Exact<{
 }>;
 
 export type CreateCaseMutation = {
-  createCase: Pick<Types.CaseEntity, 'id' | 'name' | 'description' | 'templateId' | 'createdAt'>;
+  createCase: Pick<
+    Types.CaseEntity,
+    | 'id'
+    | 'name'
+    | 'description'
+    | 'templateId'
+    | 'createdAt'
+    | 'precondition'
+    | 'expectedResult'
+    | 'importance'
+  > & {
+    steps: Array<Pick<Types.StepEntity, 'id' | 'title'>>;
+    tags: Array<
+      Pick<Types.CaseTagsEntity, 'id'> & { tag: Pick<Types.TagEntity, 'id' | 'title' | 'color'> }
+    >;
+  };
 };
 
 export type UpdateCaseMutationVariables = Types.Exact<{
@@ -85,7 +110,22 @@ export type UpdateCaseMutationVariables = Types.Exact<{
 }>;
 
 export type UpdateCaseMutation = {
-  updateCase: Pick<Types.CaseEntity, 'id' | 'name' | 'description' | 'templateId' | 'createdAt'>;
+  updateCase: Pick<
+    Types.CaseEntity,
+    | 'id'
+    | 'name'
+    | 'description'
+    | 'templateId'
+    | 'createdAt'
+    | 'precondition'
+    | 'expectedResult'
+    | 'importance'
+  > & {
+    steps: Array<Pick<Types.StepEntity, 'id' | 'title'>>;
+    tags: Array<
+      Pick<Types.CaseTagsEntity, 'id'> & { tag: Pick<Types.TagEntity, 'id' | 'title' | 'color'> }
+    >;
+  };
 };
 
 export type RemoveCaseMutationVariables = Types.Exact<{
@@ -115,3 +155,11 @@ export type RemoveTagMutationVariables = Types.Exact<{
 }>;
 
 export type RemoveTagMutation = Pick<Types.Mutation, 'removeTag'>;
+
+export type CreateUserInviteMutationVariables = Types.Exact<{
+  data: Types.CreateUserInviteInput;
+}>;
+
+export type CreateUserInviteMutation = {
+  createUserInvite: Pick<Types.UserInviteEntity, 'id' | 'email' | 'createdAt'>;
+};

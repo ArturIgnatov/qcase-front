@@ -57,6 +57,19 @@ class AuthServiceClazz {
     }
   }
 
+  public async signUpInvite(data: { fname: string; inviteCode: string; password: string }) {
+    try {
+      const result = await this.instance.post<ITokenPack>('/auth/invite-register', data);
+
+      this.setToken(result.data);
+
+      return result.data;
+    } catch (e) {
+      console.log('ERROR signUpInvite', e);
+      throw e;
+    }
+  }
+
   public decodeJWT<T extends { id: string; role: number }>(token: string) {
     return jwtDecode<{ iat: number; exp: number } & T>(token);
   }
