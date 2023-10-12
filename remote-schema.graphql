@@ -38,14 +38,15 @@ type Mutation {
   createTag(createTagInput: CreateTagInput!): TagEntity!
   createTemplate(createTemplateInput: CreateTemplateInput!): TemplateEntity!
   createTest(createTestInput: CreateTestInput!): TestEntity!
+  createTestCase(input: CreateTestCaseInput!): TestCaseEntity!
   createUser(createUser: CreateUserInput!): UserEntity!
   createUserInvite(createUserInviteInput: CreateUserInviteInput!): UserInviteEntity!
-  remove(id: String!): ID!
   removeCase(id: String!): String!
   removeOrganization(id: String!): String!
   removeProject(id: String!): String!
   removeTag(id: String!): String!
   removeTemplate(id: String!): String!
+  removeTest(id: String!): ID!
   removeUser(id: String!): String!
   updateCase(updateCaseInput: UpdateCaseInput!): CaseEntity!
   updateOrganization(updateOrgInput: UpdateOrganizationInput!): OrganizationEntity!
@@ -104,6 +105,8 @@ type Query {
   template(id: String!): TemplateEntity!
   templates(filters: TemplateFiltersInput): [TemplateEntity!]!
   test(id: String!): TestEntity!
+  testCase(id: String!): TestCaseEntity!
+  testCases(filters: TestCaseFiltersInput): [TestCaseEntity!]!
   tests(filers: TestFiltersInput): [TestEntity!]!
   user(id: String!): UserEntity!
   userInvites(filters: UserInvitesInput): [UserInviteEntity!]!
@@ -132,6 +135,7 @@ type TagEntity {
 type TemplateEntity {
   cases: [CaseEntity!]!
   createdAt: DateTime!
+  createdUser: UserEntity!
   createdUserId: ID
   description: String!
   id: ID!
@@ -142,7 +146,6 @@ type TemplateEntity {
   projectId: ID
   tags: [TemplateTagsEntity!]!
   updatedAt: DateTime!
-  user: UserEntity!
 }
 
 type TemplateTagsEntity {
@@ -155,18 +158,48 @@ type TemplateTagsEntity {
   updatedAt: DateTime!
 }
 
+type TestCaseEntity {
+  actualResult: String!
+  case: CaseEntity!
+  caseId: ID!
+  createdAt: DateTime!
+  criticality: Float!
+  id: ID!
+  status: TestCaseStatus!
+  test: TestEntity!
+  testId: ID!
+  updatedAt: DateTime!
+}
+
 type TestEntity {
   createdAt: DateTime!
+  createdUser: UserEntity!
   createdUserId: ID!
   description: String!
+  executor: UserEntity
   "User ID executor"
   executorId: ID!
   id: ID!
   name: String!
   organizationId: ID!
+  project: ProjectEntity
+  projectId: ID!
+  responsible: UserEntity
   "User ID responsible"
   responsibleId: ID!
   status: TestStatus!
+  tags: [TestTagsEntity!]!
+  testCases: [TestCaseEntity!]!
+  updatedAt: DateTime!
+}
+
+type TestTagsEntity {
+  createdAt: DateTime!
+  id: ID!
+  tag: TagEntity!
+  tagId: ID!
+  test: TestEntity!
+  testId: ID!
   updatedAt: DateTime!
 }
 
@@ -209,6 +242,12 @@ enum ProjectStatus {
   ACTIVE
   BLOCKED
   DISABLE
+}
+
+"Statuses for test-case"
+enum TestCaseStatus {
+  FAILED
+  SUCCESS
 }
 
 "Statuses for test"
@@ -269,6 +308,11 @@ input CreateTemplateInput {
   tagIds: [ID!] = []
 }
 
+input CreateTestCaseInput {
+  caseId: ID!
+  testId: ID!
+}
+
 input CreateTestInput {
   caseIds: [ID!] = []
   description: String = ""
@@ -315,6 +359,11 @@ input TagFiltersInput {
 
 input TemplateFiltersInput {
   organizationId: ID
+}
+
+input TestCaseFiltersInput {
+  organizationId: ID
+  testId: ID
 }
 
 input TestFiltersInput {

@@ -100,7 +100,7 @@ export type CreateCaseMutation = {
   > & {
     steps: Array<Pick<Types.StepEntity, 'id' | 'title'>>;
     tags: Array<
-      Pick<Types.CaseTagsEntity, 'id'> & { tag: Pick<Types.TagEntity, 'id' | 'title' | 'color'> }
+      Pick<Types.CaseTagsEntity, 'id'> & { tag: Pick<Types.TagEntity, 'title' | 'color'> }
     >;
   };
 };
@@ -123,7 +123,7 @@ export type UpdateCaseMutation = {
   > & {
     steps: Array<Pick<Types.StepEntity, 'id' | 'title'>>;
     tags: Array<
-      Pick<Types.CaseTagsEntity, 'id'> & { tag: Pick<Types.TagEntity, 'id' | 'title' | 'color'> }
+      Pick<Types.CaseTagsEntity, 'id'> & { tag: Pick<Types.TagEntity, 'title' | 'color'> }
     >;
   };
 };
@@ -163,3 +163,24 @@ export type CreateUserInviteMutationVariables = Types.Exact<{
 export type CreateUserInviteMutation = {
   createUserInvite: Pick<Types.UserInviteEntity, 'id' | 'email' | 'createdAt'>;
 };
+
+export type CreateTestMutationVariables = Types.Exact<{
+  input: Types.CreateTestInput;
+}>;
+
+export type CreateTestMutation = {
+  createTest: Pick<Types.TestEntity, 'id' | 'name' | 'description' | 'status'> & {
+    tags: Array<
+      Pick<Types.TestTagsEntity, 'id'> & { tag: Pick<Types.TagEntity, 'title' | 'color'> }
+    >;
+    project: Types.Maybe<Pick<Types.ProjectEntity, 'id' | 'name'>>;
+    responsible: Types.Maybe<Pick<Types.UserEntity, 'id' | 'fname' | 'lname'>>;
+    executor: Types.Maybe<Pick<Types.UserEntity, 'id' | 'fname' | 'lname'>>;
+  };
+};
+
+export type RemoveTestMutationVariables = Types.Exact<{
+  id: Types.Scalars['String'];
+}>;
+
+export type RemoveTestMutation = Pick<Types.Mutation, 'removeTest'>;

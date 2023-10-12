@@ -128,7 +128,6 @@ export const CREATE_CASE = gql`
       tags {
         id
         tag {
-          id
           title
           color
         }
@@ -155,7 +154,6 @@ export const UPDATE_CASE = gql`
       tags {
         id
         tag {
-          id
           title
           color
         }
@@ -207,5 +205,44 @@ export const CREATE_USER_INVITE = gql`
       email
       createdAt
     }
+  }
+`;
+
+// TESTS
+export const CREATE_TEST = gql`
+  mutation CreateTest($input: CreateTestInput!) {
+    createTest(createTestInput: $input) {
+      id
+      name
+      description
+      status
+      tags {
+        id
+        tag {
+          title
+          color
+        }
+      }
+      project {
+        id
+        name
+      }
+      responsible {
+        id
+        fname
+        lname
+      }
+      executor {
+        id
+        fname
+        lname
+      }
+    }
+  }
+`;
+
+export const REMOVE_TEST = gql`
+  mutation RemoveTest($id: String!) {
+    removeTest(id: $id)
   }
 `;

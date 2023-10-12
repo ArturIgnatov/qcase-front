@@ -89,6 +89,11 @@ export interface CreateTemplateInput {
   tagIds?: InputMaybe<Array<Scalars['ID']>>;
 }
 
+export interface CreateTestCaseInput {
+  caseId: Scalars['ID'];
+  testId: Scalars['ID'];
+}
+
 export interface CreateTestInput {
   caseIds?: InputMaybe<Array<Scalars['ID']>>;
   description?: InputMaybe<Scalars['String']>;
@@ -123,14 +128,15 @@ export interface Mutation {
   createTag: TagEntity;
   createTemplate: TemplateEntity;
   createTest: TestEntity;
+  createTestCase: TestCaseEntity;
   createUser: UserEntity;
   createUserInvite: UserInviteEntity;
-  remove: Scalars['ID'];
   removeCase: Scalars['String'];
   removeOrganization: Scalars['String'];
   removeProject: Scalars['String'];
   removeTag: Scalars['String'];
   removeTemplate: Scalars['String'];
+  removeTest: Scalars['ID'];
   removeUser: Scalars['String'];
   updateCase: CaseEntity;
   updateOrganization: OrganizationEntity;
@@ -171,6 +177,11 @@ export interface MutationCreateTestArgs {
 }
 
 
+export interface MutationCreateTestCaseArgs {
+  input: CreateTestCaseInput;
+}
+
+
 export interface MutationCreateUserArgs {
   createUser: CreateUserInput;
 }
@@ -178,11 +189,6 @@ export interface MutationCreateUserArgs {
 
 export interface MutationCreateUserInviteArgs {
   createUserInviteInput: CreateUserInviteInput;
-}
-
-
-export interface MutationRemoveArgs {
-  id: Scalars['String'];
 }
 
 
@@ -207,6 +213,11 @@ export interface MutationRemoveTagArgs {
 
 
 export interface MutationRemoveTemplateArgs {
+  id: Scalars['String'];
+}
+
+
+export interface MutationRemoveTestArgs {
   id: Scalars['String'];
 }
 
@@ -324,6 +335,8 @@ export interface Query {
   template: TemplateEntity;
   templates: Array<TemplateEntity>;
   test: TestEntity;
+  testCase: TestCaseEntity;
+  testCases: Array<TestCaseEntity>;
   tests: Array<TestEntity>;
   user: UserEntity;
   userInvites: Array<UserInviteEntity>;
@@ -392,6 +405,16 @@ export interface QueryTestArgs {
 }
 
 
+export interface QueryTestCaseArgs {
+  id: Scalars['String'];
+}
+
+
+export interface QueryTestCasesArgs {
+  filters?: InputMaybe<TestCaseFiltersInput>;
+}
+
+
 export interface QueryTestsArgs {
   filers?: InputMaybe<TestFiltersInput>;
 }
@@ -441,6 +464,7 @@ export interface TemplateEntity {
   __typename?: 'TemplateEntity';
   cases: Array<CaseEntity>;
   createdAt: Scalars['DateTime'];
+  createdUser: UserEntity;
   createdUserId: Maybe<Scalars['ID']>;
   description: Scalars['String'];
   id: Scalars['ID'];
@@ -451,7 +475,6 @@ export interface TemplateEntity {
   projectId: Maybe<Scalars['ID']>;
   tags: Array<TemplateTagsEntity>;
   updatedAt: Scalars['DateTime'];
-  user: UserEntity;
 }
 
 export interface TemplateFiltersInput {
@@ -469,19 +492,51 @@ export interface TemplateTagsEntity {
   updatedAt: Scalars['DateTime'];
 }
 
+export interface TestCaseEntity {
+  __typename?: 'TestCaseEntity';
+  actualResult: Scalars['String'];
+  case: CaseEntity;
+  caseId: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  criticality: Scalars['Float'];
+  id: Scalars['ID'];
+  status: TestCaseStatus;
+  test: TestEntity;
+  testId: Scalars['ID'];
+  updatedAt: Scalars['DateTime'];
+}
+
+export interface TestCaseFiltersInput {
+  organizationId?: InputMaybe<Scalars['ID']>;
+  testId?: InputMaybe<Scalars['ID']>;
+}
+
+/** Statuses for test-case */
+export enum TestCaseStatus {
+  FAILED = 'FAILED',
+  SUCCESS = 'SUCCESS'
+}
+
 export interface TestEntity {
   __typename?: 'TestEntity';
   createdAt: Scalars['DateTime'];
+  createdUser: UserEntity;
   createdUserId: Scalars['ID'];
   description: Scalars['String'];
+  executor: Maybe<UserEntity>;
   /** User ID executor */
   executorId: Scalars['ID'];
   id: Scalars['ID'];
   name: Scalars['String'];
   organizationId: Scalars['ID'];
+  project: Maybe<ProjectEntity>;
+  projectId: Scalars['ID'];
+  responsible: Maybe<UserEntity>;
   /** User ID responsible */
   responsibleId: Scalars['ID'];
   status: TestStatus;
+  tags: Array<TestTagsEntity>;
+  testCases: Array<TestCaseEntity>;
   updatedAt: Scalars['DateTime'];
 }
 
@@ -495,6 +550,17 @@ export enum TestStatus {
   IN_PROGRESS = 'IN_PROGRESS',
   SUCCESS = 'SUCCESS',
   WAITING = 'WAITING'
+}
+
+export interface TestTagsEntity {
+  __typename?: 'TestTagsEntity';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  tag: TagEntity;
+  tagId: Scalars['ID'];
+  test: TestEntity;
+  testId: Scalars['ID'];
+  updatedAt: Scalars['DateTime'];
 }
 
 export interface UpdateCaseInput {

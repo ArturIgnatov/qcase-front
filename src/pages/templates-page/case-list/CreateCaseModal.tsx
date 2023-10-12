@@ -8,6 +8,7 @@ import {
 import { CREATE_CASE } from '../../../apollo/mutations';
 import {
   GlobalCasesQuery,
+  GlobalCasesQueryVariables,
   GlobalTagsQuery,
   GlobalTagsQueryVariables,
 } from '../../../apollo/queries-generated-types';
@@ -58,15 +59,15 @@ export const CreateCaseModal: FC<IProps> = memo(
       CREATE_CASE,
       {
         update(cache, { data }) {
-          const queryData = cache.readQuery<GlobalCasesQuery>({
+          const queryData = cache.readQuery<GlobalCasesQuery, GlobalCasesQueryVariables>({
             query: GLOBAL_CASES,
-            variables: { filters: { templateId } },
+            variables: { filters: { templateIds: [templateId] } },
           });
 
           if (data) {
-            cache.writeQuery<GlobalCasesQuery>({
+            cache.writeQuery<GlobalCasesQuery, GlobalCasesQueryVariables>({
               query: GLOBAL_CASES,
-              variables: { filters: { templateId } },
+              variables: { filters: { templateIds: [templateId] } },
               data: { cases: [...(queryData?.cases ?? []), data.createCase] },
             });
           }

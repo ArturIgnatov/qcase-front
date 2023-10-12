@@ -6,6 +6,7 @@ export const styles = createStyles({
     width: '100%',
     height: '100%',
     p: 0,
+    flexDirection: 'column',
   },
 
   wrapper: {
@@ -14,5 +15,17 @@ export const styles = createStyles({
     display: 'flex',
     flexDirection: 'column',
     flex: 1,
+  },
+
+  content: {
+    display: 'flex',
+    flex: 1,
+  },
+
+  content__center: {
+    display: 'flex',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

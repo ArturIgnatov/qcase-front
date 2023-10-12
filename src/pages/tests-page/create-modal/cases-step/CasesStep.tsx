@@ -1,26 +1,51 @@
-import { FC, memo } from 'react';
-import { Box } from '@mui/material';
+import { Dispatch, FC, memo, SetStateAction } from 'react';
+import { Box, CircularProgress } from '@mui/material';
 import { useQuery } from '@apollo/client';
 import {
-  GlobalCasesQuery,
-  GlobalCasesQueryVariables,
+  CasesSelectListQuery,
+  CasesSelectListQueryVariables,
 } from '../../../../apollo/queries-generated-types';
-import { GLOBAL_CASES } from '../../../../apollo/queries';
+import { CASES_SELECT_LIST } from '../../../../apollo/queries';
+import { EmptyPlaceholder } from '../../../../components/empty-placeholder/EmptyPlaceholder';
+import { styles } from './styles';
+import { TransferList } from './transfer-list/TransferList';
 
 interface IProps {
+  testCases: CasesSelectListQuery['cases'];
   organizationId: string;
   templateIds: string[];
+  setTestCases: Dispatch<SetStateAction<IProps['testCases']>>;
 }
 
-export const CasesStep: FC<IProps> = memo(({ organizationId, templateIds }) => {
-  const { data, loading } = useQuery<GlobalCasesQuery, GlobalCasesQueryVariables>(GLOBAL_CASES, {
-    fetchPolicy: 'network-only',
-    variables: { filters: { templateIds } },
-  });
+export const CasesStep: FC<IProps> = memo(
+  ({ organizationId, testCases, templateIds, setTestCases }) => {
+    const { data, loading } = useQuery<CasesSelectListQuery, CasesSelectListQueryVariables>(
+      CASES_SELECT_LIST,
+      {
+        fetchPolicy: 'network-only',
+        variables: { filters: { templateIds } },
+      },
+    );
 
-  return (
-    <Box>
-      <Box />
-    </Box>
-  );
-});
+    return (
+      <Box sx={styles.container}>
+        {loading ? (
+          <Box sx={styles.container__center}>
+            <CircularProgress />
+          </Box>
+        ) : data?.cases.length ? (
+          <Box sx={styles.container__center}>
+            <TransferList cases={data.cases} {...{ testCases, setTestCases }} />
+          </Box>
+        ) : (
+          <Box sx={styles.container__center}>
+            <EmptyPlaceholder
+              title="Cases list is empty"
+              description="There are no cases in the selected templates. Return to the page with templates and add cases"
+            />
+          </Box>
+        )}
+      </Box>
+    );
+  },
+);

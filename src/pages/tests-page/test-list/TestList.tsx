@@ -1,23 +1,22 @@
 import { FC, memo } from 'react';
 import { Box, Collapse, List } from '@mui/material';
-import { GlobalTemplatesQuery } from '../../../apollo/queries-generated-types';
-import { styles } from './styles';
-import { TemplateItem } from './TemplateItem';
 import { TransitionGroup } from 'react-transition-group';
+import { GlobalTestsQuery } from '../../../apollo/queries-generated-types';
+import { TestItem } from './TestItem';
+import { styles } from './styles';
 
 interface IProps {
-  loading: boolean;
-  templates: GlobalTemplatesQuery['templates'] | undefined;
+  tests: GlobalTestsQuery['tests'];
 }
 
-export const TemplateList: FC<IProps> = memo(({ templates }) => {
+export const TestList: FC<IProps> = memo(({ tests }) => {
   return (
     <Box sx={styles.container}>
       <List>
         <TransitionGroup appear>
-          {templates?.map(el => (
+          {tests.map(el => (
             <Collapse key={el.id}>
-              <TemplateItem {...el} />
+              <TestItem {...el} />
             </Collapse>
           ))}
         </TransitionGroup>

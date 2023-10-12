@@ -12,12 +12,10 @@ import {
 } from '@mui/material';
 import { styles } from './styles';
 import { useMutation, useQuery } from '@apollo/client';
-import { GLOBAL_ORGANIZATION_USERS, GLOBAL_USER_INVITES } from '../../../../../apollo/queries';
+import { GLOBAL_USER_INVITES } from '../../../../../apollo/queries';
 import {
   GlobalInvitesQuery,
   GlobalInvitesQueryVariables,
-  GlobalOrganizationUsersQuery,
-  GlobalOrganizationUsersQueryVariables,
 } from '../../../../../apollo/queries-generated-types';
 import { UsersList } from './UsersList';
 import AddIcon from '@mui/icons-material/Add';
@@ -31,6 +29,7 @@ import { DialogHeader } from '../../../../../components/dialog-header/DialogHead
 import { useModalVisible } from '../../../../../hooks/modal-visible';
 import { useSnackbar } from 'notistack';
 import { Send } from '@mui/icons-material';
+import { useOrganizationUsers } from '../../../../../hooks/organization-users';
 
 interface IProps {
   id: string;
@@ -41,16 +40,7 @@ export const OrganizationUsers: FC<IProps> = memo(({ id }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [email, setEmail] = useState('');
 
-  const { data: users } = useQuery<
-    GlobalOrganizationUsersQuery,
-    GlobalOrganizationUsersQueryVariables
-  >(GLOBAL_ORGANIZATION_USERS, {
-    variables: {
-      data: {
-        organizationId: id,
-      },
-    },
-  });
+  const { data: users } = useOrganizationUsers(id);
 
   const { data: invites } = useQuery<GlobalInvitesQuery, GlobalInvitesQueryVariables>(
     GLOBAL_USER_INVITES,

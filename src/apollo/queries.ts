@@ -133,3 +133,67 @@ export const GLOBAL_TAGS = gql`
     }
   }
 `;
+
+export const GLOBAL_TESTS = gql`
+  query GlobalTests($filters: TestFiltersInput!) {
+    tests(filers: $filters) {
+      id
+      name
+      description
+      status
+      tags {
+        id
+        tag {
+          title
+          color
+        }
+      }
+      project {
+        id
+        name
+      }
+      responsible {
+        id
+        fname
+        lname
+      }
+      executor {
+        id
+        fname
+        lname
+      }
+    }
+  }
+`;
+
+export const GLOBAL_TEST_CASES = gql`
+  query GlobalTestCases($filters: TestCaseFiltersInput) {
+    testCases(filters: $filters) {
+      id
+      case {
+        id
+        name
+        description
+        createdAt
+        templateId
+        precondition
+        expectedResult
+        importance
+        steps {
+          id
+          title
+        }
+        tags {
+          id
+          tag {
+            id
+            color
+            title
+          }
+        }
+      }
+      criticality
+      status
+    }
+  }
+`;

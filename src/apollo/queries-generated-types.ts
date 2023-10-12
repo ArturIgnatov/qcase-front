@@ -101,3 +101,49 @@ export type GlobalTagsQueryVariables = Types.Exact<{
 export type GlobalTagsQuery = {
   tags: Array<Pick<Types.TagEntity, 'id' | 'title' | 'color' | 'organizationId'>>;
 };
+
+export type GlobalTestsQueryVariables = Types.Exact<{
+  filters: Types.TestFiltersInput;
+}>;
+
+export type GlobalTestsQuery = {
+  tests: Array<
+    Pick<Types.TestEntity, 'id' | 'name' | 'description' | 'status'> & {
+      tags: Array<
+        Pick<Types.TestTagsEntity, 'id'> & { tag: Pick<Types.TagEntity, 'title' | 'color'> }
+      >;
+      project: Types.Maybe<Pick<Types.ProjectEntity, 'id' | 'name'>>;
+      responsible: Types.Maybe<Pick<Types.UserEntity, 'id' | 'fname' | 'lname'>>;
+      executor: Types.Maybe<Pick<Types.UserEntity, 'id' | 'fname' | 'lname'>>;
+    }
+  >;
+};
+
+export type GlobalTestCasesQueryVariables = Types.Exact<{
+  filters?: Types.InputMaybe<Types.TestCaseFiltersInput>;
+}>;
+
+export type GlobalTestCasesQuery = {
+  testCases: Array<
+    Pick<Types.TestCaseEntity, 'id' | 'criticality' | 'status'> & {
+      case: Pick<
+        Types.CaseEntity,
+        | 'id'
+        | 'name'
+        | 'description'
+        | 'createdAt'
+        | 'templateId'
+        | 'precondition'
+        | 'expectedResult'
+        | 'importance'
+      > & {
+        steps: Array<Pick<Types.StepEntity, 'id' | 'title'>>;
+        tags: Array<
+          Pick<Types.CaseTagsEntity, 'id'> & {
+            tag: Pick<Types.TagEntity, 'id' | 'color' | 'title'>;
+          }
+        >;
+      };
+    }
+  >;
+};

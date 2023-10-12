@@ -36,11 +36,12 @@ import {
 import { AppChip } from '../../../components/app-chip/AppChip';
 import { useModalVisible } from '../../../hooks/modal-visible';
 import { DialogHeader } from '../../../components/dialog-header/DialogHeader';
+import { CaseImportance } from '../../../apollo/app-schema';
 
 type IProps = GlobalCasesQuery['cases'][number];
 
 export const CaseItem: FC<IProps> = memo(
-  ({ id, name, description, precondition, expectedResult, tags, steps }) => {
+  ({ id, name, description, precondition, expectedResult, importance, tags, steps }) => {
     const { isVisible, closed, closeModal, openModal } = useModalVisible();
     const [showInfo, setShowInfo] = useState(false);
 
@@ -87,10 +88,10 @@ export const CaseItem: FC<IProps> = memo(
             <Stack direction="row" sx={{ mr: 4 }} spacing={4}>
               {tags.map(caseTag => (
                 <AppChip
-                  key={id}
+                  key={caseTag.id}
                   label={caseTag.tag.title}
                   size="small"
-                  color={caseTag.tag.title}
+                  color={caseTag.tag.color}
                 />
               ))}
               <Divider orientation="vertical" flexItem />
@@ -98,9 +99,15 @@ export const CaseItem: FC<IProps> = memo(
                 sx={{ p: 1 }}
                 onClick={() => ''}
                 variant="outlined"
-                color="info"
+                color={
+                  importance === CaseImportance.LOW
+                    ? 'success'
+                    : CaseImportance.MIDDLE
+                    ? 'warning'
+                    : 'error'
+                }
                 size="small"
-                label="Status"
+                label={importance}
               />
             </Stack>
           </ListItemButton>

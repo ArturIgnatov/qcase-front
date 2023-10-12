@@ -7,6 +7,7 @@ import {
   GlobalTagsQuery,
   GlobalTagsQueryVariables,
   GlobalTemplatesQuery,
+  GlobalTemplatesQueryVariables,
 } from '../../../apollo/queries-generated-types';
 import {
   CreateTemplateMutation,
@@ -55,13 +56,13 @@ export const CreateTemplateModal: FC<IProps> = ({ isVisible, organizationId, clo
     CreateTemplateMutationVariables
   >(CREATE_TEMPLATE, {
     update(cache, { data }) {
-      const queryData = cache.readQuery<GlobalTemplatesQuery>({
+      const queryData = cache.readQuery<GlobalTemplatesQuery, GlobalTemplatesQueryVariables>({
         query: GET_GLOBAL_TEMPLATES,
         variables: { filters: { organizationId } },
       });
 
       if (data) {
-        cache.writeQuery<GlobalTemplatesQuery>({
+        cache.writeQuery<GlobalTemplatesQuery, GlobalTemplatesQueryVariables>({
           query: GET_GLOBAL_TEMPLATES,
           variables: { filters: { organizationId } },
           data: { templates: [...(queryData?.templates ?? []), data.createTemplate] },
